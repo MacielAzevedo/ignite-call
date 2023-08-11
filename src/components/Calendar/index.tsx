@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { CaretLeft, CaretRight } from 'phosphor-react';
 import {
   CalendarActions,
@@ -8,22 +9,40 @@ import {
   CalendarTitle,
 } from './styles';
 import { getWeekDays } from '@/utils/get-week-days';
+import { useState } from 'react';
 
 export function Calendar() {
+  const [currentDate, setCurrentDate] = useState(() => {
+    return dayjs().set('date', 1);
+  });
+
+  function handlePreviousMonth() {
+    const previousMonthDate = currentDate.subtract(1, 'month');
+    setCurrentDate(previousMonthDate);
+  }
+
+  function handleNextMonth() {
+    const NextMonthDate = currentDate.add(1, 'month');
+    setCurrentDate(NextMonthDate);
+  }
+
   const shortWeekDays = getWeekDays({ short: true });
+
+  const currentMonth = currentDate.format('MMMM');
+  const currentYear = currentDate.format('YYYY');
 
   return (
     <CalendarContainer>
       <CalendarHeader>
         <CalendarTitle>
-          Agosto <span>2023</span>
+          {currentMonth} <span>{currentYear}</span>
         </CalendarTitle>
 
         <CalendarActions>
-          <button>
+          <button onClick={handlePreviousMonth} title="Previous month">
             <CaretLeft />
           </button>
-          <button>
+          <button onClick={handleNextMonth} title="Next month">
             <CaretRight />
           </button>
         </CalendarActions>
