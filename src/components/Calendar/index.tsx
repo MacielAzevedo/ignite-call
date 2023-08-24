@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
-import { CaretLeft, CaretRight } from 'phosphor-react';
+import dayjs from 'dayjs'
+import { CaretLeft, CaretRight } from 'phosphor-react'
 import {
   CalendarActions,
   CalendarBody,
@@ -7,56 +7,56 @@ import {
   CalendarDay,
   CalendarHeader,
   CalendarTitle,
-} from './styles';
-import { getWeekDays } from '@/utils/get-week-days';
-import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/axios';
-import { useRouter } from 'next/router';
+} from './styles'
+import { getWeekDays } from '@/utils/get-week-days'
+import { useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '@/lib/axios'
+import { useRouter } from 'next/router'
 
 interface CalendarWeek {
-  week: number;
+  week: number
   days: Array<{
-    date: dayjs.Dayjs;
-    disabled: boolean;
-  }>;
+    date: dayjs.Dayjs
+    disabled: boolean
+  }>
 }
 
-type CalendarWeeks = CalendarWeek[];
+type CalendarWeeks = CalendarWeek[]
 
 interface BlockedDates {
-  blockedWeekDays: number[];
-  blockedDates: number[];
+  blockedWeekDays: number[]
+  blockedDates: number[]
 }
 
 interface CalendarProps {
-  selectedDate?: Date | null;
-  onDateSelected: (date: Date) => void;
+  selectedDate?: Date | null
+  onDateSelected: (date: Date) => void
 }
 
 export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => {
-    return dayjs().set('date', 1);
-  });
+    return dayjs().set('date', 1)
+  })
 
-  const router = useRouter();
+  const router = useRouter()
 
   function handlePreviousMonth() {
-    const previousMonthDate = currentDate.subtract(1, 'month');
-    setCurrentDate(previousMonthDate);
+    const previousMonthDate = currentDate.subtract(1, 'month')
+    setCurrentDate(previousMonthDate)
   }
 
   function handleNextMonth() {
-    const NextMonthDate = currentDate.add(1, 'month');
-    setCurrentDate(NextMonthDate);
+    const NextMonthDate = currentDate.add(1, 'month')
+    setCurrentDate(NextMonthDate)
   }
 
-  const shortWeekDays = getWeekDays({ short: true });
+  const shortWeekDays = getWeekDays({ short: true })
 
-  const currentMonth = currentDate.format('MMMM');
-  const currentYear = currentDate.format('YYYY');
+  const currentMonth = currentDate.format('MMMM')
+  const currentYear = currentDate.format('YYYY')
 
-  const username = String(router.query.username);
+  const username = String(router.query.username)
 
   const { data: blockedDates } = useQuery<BlockedDates>(
     ['blocked-dates', currentDate.get('year'), currentDate.get('month')],
@@ -66,48 +66,48 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           year: currentDate.get('year'),
           month: currentDate.get('month') + 1,
         },
-      });
-      return response.data;
+      })
+      return response.data
     }
-  );
+  )
 
   const calendarWeeks = useMemo(() => {
     if (!blockedDates) {
-      return [];
+      return []
     }
 
     const daysInMonthArray = Array.from({
       length: currentDate.daysInMonth(),
     }).map((_, index) => {
-      return currentDate.set('date', index + 1);
-    });
+      return currentDate.set('date', index + 1)
+    })
 
-    const firstWeekDay = currentDate.get('day');
+    const firstWeekDay = currentDate.get('day')
 
     const previousMonthFillArray = Array.from({
       length: firstWeekDay,
     })
       .map((_, index) => {
-        return currentDate.subtract(index + 1, 'day');
+        return currentDate.subtract(index + 1, 'day')
       })
-      .reverse();
+      .reverse()
 
     const lastDayInCurrentMonth = currentDate.set(
       'date',
       currentDate.daysInMonth()
-    );
+    )
 
-    const lastWeekDay = lastDayInCurrentMonth.get('day');
+    const lastWeekDay = lastDayInCurrentMonth.get('day')
 
     const nextMonthFillArray = Array.from({
       length: 7 - (lastWeekDay + 1),
     }).map((_, index) => {
-      return lastDayInCurrentMonth.add(index + 1, 'day');
-    });
+      return lastDayInCurrentMonth.add(index + 1, 'day')
+    })
 
     const calendarDays = [
       ...previousMonthFillArray.map((date) => {
-        return { date, disabled: true };
+        return { date, disabled: true }
       }),
       ...daysInMonthArray.map((date) => {
         return {
@@ -116,31 +116,31 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
             date.endOf('day').isBefore(new Date()) ||
             blockedDates.blockedWeekDays.includes(date.get('day')) ||
             blockedDates.blockedDates?.includes(date.get('date')),
-        };
+        }
       }),
       ...nextMonthFillArray.map((date) => {
-        return { date, disabled: true };
+        return { date, disabled: true }
       }),
-    ];
+    ]
 
     const calendarWeeks = calendarDays.reduce<CalendarWeeks>(
       (weeks, _, index, original) => {
-        const isNewWeek = index % 7 === 0;
+        const isNewWeek = index % 7 === 0
 
         if (isNewWeek) {
           weeks.push({
             week: index / 7 + 1,
             days: original.slice(index, index + 7),
-          });
+          })
         }
 
-        return weeks;
+        return weeks
       },
       []
-    );
+    )
 
-    return calendarWeeks;
-  }, [currentDate, blockedDates]);
+    return calendarWeeks
+  }, [currentDate, blockedDates])
 
   return (
     <CalendarContainer>
@@ -163,7 +163,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
         <thead>
           <tr>
             {shortWeekDays.map((weekDay) => {
-              return <th key={weekDay}>{weekDay}.</th>;
+              return <th key={weekDay}>{weekDay}.</th>
             })}
           </tr>
         </thead>
@@ -182,13 +182,13 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
                         {date.get('date')}
                       </CalendarDay>
                     </td>
-                  );
+                  )
                 })}
               </tr>
-            );
+            )
           })}
         </tbody>
       </CalendarBody>
     </CalendarContainer>
-  );
+  )
 }
