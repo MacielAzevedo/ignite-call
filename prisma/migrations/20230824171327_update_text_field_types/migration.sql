@@ -3,7 +3,7 @@ CREATE TABLE `users` (
     `id` VARCHAR(191) NOT NULL,
     `username` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `bio` VARCHAR(191) NULL,
+    `bio` TEXT NULL,
     `email` VARCHAR(191) NULL,
     `avatar_url` VARCHAR(191) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -20,12 +20,12 @@ CREATE TABLE `accounts` (
     `type` VARCHAR(191) NOT NULL,
     `provider` VARCHAR(191) NOT NULL,
     `provider_account_id` VARCHAR(191) NOT NULL,
-    `refresh_token` VARCHAR(191) NULL,
-    `access_token` VARCHAR(191) NULL,
+    `refresh_token` TEXT NULL,
+    `access_token` TEXT NULL,
     `expires_at` INTEGER NULL,
     `token_type` VARCHAR(191) NULL,
     `scope` VARCHAR(191) NULL,
-    `id_token` VARCHAR(191) NULL,
+    `id_token` TEXT NULL,
     `session_state` VARCHAR(191) NULL,
 
     UNIQUE INDEX `accounts_provider_provider_account_id_key`(`provider`, `provider_account_id`),
@@ -44,7 +44,7 @@ CREATE TABLE `sessions` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `userTimeIntervals` (
+CREATE TABLE `user_Time_Intervals` (
     `id` VARCHAR(191) NOT NULL,
     `week_day` INTEGER NOT NULL,
     `time_start_in_minutes` INTEGER NOT NULL,
@@ -74,7 +74,7 @@ ALTER TABLE `accounts` ADD CONSTRAINT `accounts_user_id_fkey` FOREIGN KEY (`user
 ALTER TABLE `sessions` ADD CONSTRAINT `sessions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `userTimeIntervals` ADD CONSTRAINT `userTimeIntervals_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `user_Time_Intervals` ADD CONSTRAINT `user_Time_Intervals_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `schedulings` ADD CONSTRAINT `schedulings_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
