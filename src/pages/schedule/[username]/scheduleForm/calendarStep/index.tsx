@@ -12,7 +12,7 @@ import { api } from '@/lib/axios'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 
-interface Avaiablility {
+interface Availablility {
   possibleTimes: number[]
   availableTimes: number[]
 }
@@ -39,7 +39,7 @@ export function CalendarStep({ onSelectedDateTime }: CalendarStepProps) {
     ? dayjs(selectedDate).format('YYYY-MM-DD')
     : null
 
-  const { data: availability } = useQuery<Avaiablility>(
+  const { data: availability } = useQuery<Availablility>(
     ['availability', selectedDateWithoutTime],
     async () => {
       const response = await api.get(`users/${username}/availability`, {

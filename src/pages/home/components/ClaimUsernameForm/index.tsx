@@ -1,10 +1,10 @@
-import { Button, Text, TextInput } from '@ignite-ui/react';
-import { Form, FormAnnotation } from './style';
-import { ArrowRight } from 'phosphor-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/router';
+import { Button, Text, TextInput } from '@ignite-ui/react'
+import { Form, FormAnnotation } from './style'
+import { ArrowRight } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
 
 const ClaimUsernameFormSchema = z.object({
   username: z
@@ -14,9 +14,9 @@ const ClaimUsernameFormSchema = z.object({
       message: 'O usuário deve ter apenas letras e hifens.',
     })
     .transform((username) => username.toLowerCase()),
-});
+})
 
-type ClaimUsernameFormData = z.infer<typeof ClaimUsernameFormSchema>;
+type ClaimUsernameFormData = z.infer<typeof ClaimUsernameFormSchema>
 
 export default function ClaimUsernameForm() {
   const {
@@ -25,13 +25,13 @@ export default function ClaimUsernameForm() {
     formState: { errors, isSubmitting },
   } = useForm<ClaimUsernameFormData>({
     resolver: zodResolver(ClaimUsernameFormSchema),
-  });
+  })
 
-  const router = useRouter();
+  const router = useRouter()
 
   async function handleClaimUsername(data: ClaimUsernameFormData) {
-    const { username } = data;
-    await router.push(`/register?username=${username}`);
+    const { username } = data
+    await router.push(`/register?username=${username}`)
   }
 
   return (
@@ -57,5 +57,5 @@ export default function ClaimUsernameForm() {
         </Text>
       </FormAnnotation>
     </>
-  );
+  )
 }

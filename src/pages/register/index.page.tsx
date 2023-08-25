@@ -1,13 +1,13 @@
-import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react';
-import { Container, Form, FormError, Header } from './styles';
-import { ArrowRight } from 'phosphor-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { api } from '@/lib/axios';
-import { AxiosError } from 'axios';
+import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react'
+import { Container, Form, FormError, Header } from './styles'
+import { ArrowRight } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { api } from '@/lib/axios'
+import { AxiosError } from 'axios'
 
 const RegisterFormSchema = z.object({
   username: z
@@ -21,9 +21,9 @@ const RegisterFormSchema = z.object({
   fullName: z
     .string()
     .min(3, { message: 'O nome precisa ter pelo menos 3 letras.' }),
-});
+})
 
-type RegisterFormData = z.infer<typeof RegisterFormSchema>;
+type RegisterFormData = z.infer<typeof RegisterFormSchema>
 
 export default function Register() {
   const {
@@ -33,30 +33,30 @@ export default function Register() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(RegisterFormSchema),
-  });
+  })
 
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     if (router.query.username) {
-      setValue('username', String(router.query.username));
+      setValue('username', String(router.query.username))
     }
-  }, [router.query?.username, setValue]);
+  }, [router.query?.username, setValue])
 
   async function handleRegister(data: RegisterFormData) {
     try {
       await api.post('/users', {
         name: data.fullName,
         username: data.username,
-      });
+      })
 
-      await router.push('/register/connect-calendar');
+      await router.push('/register/connect-calendar')
     } catch (error) {
       if (error instanceof AxiosError && error?.response?.data.message) {
-        alert(error.response.data.message);
-        return;
+        alert(error.response.data.message)
+        return
       }
-      console.log(error);
+      console.log(error)
     }
   }
 
@@ -101,5 +101,5 @@ export default function Register() {
         </Button>
       </Form>
     </Container>
-  );
+  )
 }
