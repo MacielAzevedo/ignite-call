@@ -1,39 +1,43 @@
-import { Calendar } from '@/components/Calendar';
+import { Calendar } from '@/components/Calendar'
 import {
   Container,
   TimerPicker,
   TimerPickerHeader,
   TimerPickerItem,
   TimerPickerList,
-} from './styles';
-import { useState } from 'react';
-import dayjs from 'dayjs';
-import { api } from '@/lib/axios';
-import { useRouter } from 'next/router';
-import { useQuery } from '@tanstack/react-query';
+} from './styles'
+import { useState } from 'react'
+import dayjs from 'dayjs'
+import { api } from '@/lib/axios'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 
 interface Avaiablility {
-  possibleTimes: number[];
-  availableTimes: number[];
+  possibleTimes: number[]
+  availableTimes: number[]
 }
 
-export function CalendarStep() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+interface CalendarStepProps {
+  onSelectedDateTime: (date: Date) => void
+}
 
-  const router = useRouter();
+export function CalendarStep({ onSelectedDateTime }: CalendarStepProps) {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
-  const isDateSelected = !!selectedDate;
-  const username = String(router.query.username);
+  const router = useRouter()
 
-  const weekDay = selectedDate ? dayjs(selectedDate).format('dddd') : null;
-  
+  const isDateSelected = !!selectedDate
+  const username = String(router.query.username)
+
+  const weekDay = selectedDate ? dayjs(selectedDate).format('dddd') : null
+
   const describedDate = selectedDate
     ? dayjs(selectedDate).format('DD[ de ]MMMM')
-    : null;
+    : null
 
   const selectedDateWithoutTime = selectedDate
     ? dayjs(selectedDate).format('YYYY-MM-DD')
-    : null;
+    : null
 
   const { data: availability } = useQuery<Avaiablility>(
     ['availability', selectedDateWithoutTime],
@@ -42,13 +46,22 @@ export function CalendarStep() {
         params: {
           date: selectedDateWithoutTime,
         },
-      });
-      return response.data;
+      })
+      return response.data
     },
     {
       enabled: !!selectedDate,
     }
-  );
+  )
+
+  function handleSelectTime(hour: number) {
+    const dateWithTime = dayjs(selectedDate)
+      .set('hour', hour)
+      .startOf('hour')
+      .toDate()
+
+    onSelectedDateTime(dateWithTime)
+  }
 
   return (
     <Container isTimePickerOpen={isDateSelected}>
@@ -65,15 +78,16 @@ export function CalendarStep() {
               return (
                 <TimerPickerItem
                   key={hour}
+                  onClick={() => handleSelectTime(hour)}
                   disabled={!availability.availableTimes.includes(hour)}
                 >
                   {String(hour).padStart(2, '0')}:00h
                 </TimerPickerItem>
-              );
+              )
             })}
           </TimerPickerList>
         </TimerPicker>
       )}
     </Container>
-  );
+  )
 }
